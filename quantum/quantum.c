@@ -233,6 +233,9 @@ bool process_record_quantum(keyrecord_t *record) {
             // Must run first to be able to mask key_up events.
             process_key_lock(&keycode, record) &&
 #endif
+#ifdef LEADER_ENABLE
+            process_leader(keycode, record) &&
+#endif
 #if defined(DYNAMIC_MACRO_ENABLE) && !defined(DYNAMIC_MACRO_USER_CALL)
             // Must run asap to ensure all keypresses are recorded.
             process_dynamic_macro(keycode, record) &&
@@ -273,9 +276,6 @@ bool process_record_quantum(keyrecord_t *record) {
 #endif
 #if defined(UNICODE_COMMON_ENABLE)
             process_unicode_common(keycode, record) &&
-#endif
-#ifdef LEADER_ENABLE
-            process_leader(keycode, record) &&
 #endif
 #ifdef PRINTING_ENABLE
             process_printer(keycode, record) &&
