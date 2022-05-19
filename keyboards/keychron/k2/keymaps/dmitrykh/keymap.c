@@ -187,6 +187,66 @@ bool dip_switch_update_user(uint8_t index, bool active) {
   return true;
 }
 
+LEADER_EXTERNS();
+
+static bool quote_swap = false;
+
+#define USER_SEQ_ONE_KEY(key) if (sequence[0] == (key))
+#define USER_SEQ_TWO_KEYS(key1, key2) if (sequence[0] == (key1) && sequence[1] == (key2))
+#define USER_SEQ_THREE_KEYS(key1, key2, key3) if (sequence[0] == (key1) && sequence[1] == (key2) && sequence[2] == (key3))
+#define USER_SEQ_FOUR_KEYS(key1, key2, key3, key4) if (sequence[0] == (key1) && sequence[1] == (key2) && sequence[2] == (key3) && sequence[3] == (key4))
+#define USER_SEQ_FIVE_KEYS(key1, key2, key3, key4, key5) if (sequence[0] == (key1) && sequence[1] == (key2) && sequence[2] == (key3) && sequence[3] == (key4) && sequence[4] == (key5))
+
+int8_t leader_user_process(uint8_t sequence_size, uint16_t sequence[5]) {
+  if (sequence_size == 1) {
+    USER_SEQ_ONE_KEY(KC_1) {
+      keyrecord_t kr;
+      kr.event.pressed = false;
+      process_dynamic_macro(DYN_MACRO_PLAY1, &kr);
+      return 1;
+    }
+    SEQ_ONE_KEY(KC_2) {
+      keyrecord_t kr;
+      kr.event.pressed = false;
+      process_dynamic_macro(DYN_MACRO_PLAY2, &kr);
+      return 1;
+    }
+    SEQ_ONE_KEY(KC_QUOT) {
+      quote_swap = !quote_swap;
+      return 1;
+    }
+
+    // Check all possible continuations. Return error if no continuation is possible.
+    if (sequence[0] == KC_Q) {
+      return 0;
+    }
+    // TODO: error signal
+    return -1;
+  } else if (sequence_size == 2) {
+    USER_SEQ_TWO_KEYS(KC_Q, KC_1) {
+      keyrecord_t kr;
+      kr.event.pressed = false;
+      process_dynamic_macro( DYN_REC_START1, &kr );
+      return 1;
+    }
+    USER_SEQ_TWO_KEYS(KC_Q, KC_Q) {
+      keyrecord_t kr;
+      kr.event.pressed = true;
+      process_dynamic_macro(DYN_REC_STOP, &kr);
+      return 1;
+    }
+    USER_SEQ_TWO_KEYS(KC_Q, KC_2) {
+      keyrecord_t kr;
+      kr.event.pressed = false;
+      process_dynamic_macro(DYN_REC_START2, &kr);
+      return 1;
+    }
+    // TODO: error signal
+    return -1;
+  }
+  return -1;
+}
+
 void keyboard_post_init_user(void) {
   // Customise these values to desired behaviour
   // debug_enable = true;
