@@ -27,6 +27,10 @@ __attribute__((weak)) void leader_start(void) {}
 
 __attribute__((weak)) void leader_end(void) {}
 
+__attribute__((weak)) int8_t leader_user_process(uint8_t sequence_size, uint16_t sequence[5]) {
+    return -1;
+}
+
 // Leader key stuff
 bool     leading     = false;
 uint16_t leader_time = 0;
@@ -61,6 +65,11 @@ bool process_leader(uint16_t keycode, keyrecord_t *record) {
                 if (leader_sequence_size < (sizeof(leader_sequence) / sizeof(leader_sequence[0]))) {
                     leader_sequence[leader_sequence_size] = keycode;
                     leader_sequence_size++;
+
+                    if (leader_user_process(leader_sequence_size, leader_sequence) != 0) {
+                        leading = false;
+                        leader_end();
+                    }
                 } else {
                     leading = false;
                     leader_end();

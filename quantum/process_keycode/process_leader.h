@@ -22,6 +22,10 @@ bool process_leader(uint16_t keycode, keyrecord_t *record);
 
 void leader_start(void);
 void leader_end(void);
+// -1: not found
+// 0: continue the leader sequence
+// 1: successfuly executed sequence
+int8_t leader_user_process(uint8_t sequence_size, uint16_t sequence[5]);
 void qk_leader_start(void);
 
 #define SEQ_ONE_KEY(key) if (leader_sequence[0] == (key) && leader_sequence[1] == 0 && leader_sequence[2] == 0 && leader_sequence[3] == 0 && leader_sequence[4] == 0)

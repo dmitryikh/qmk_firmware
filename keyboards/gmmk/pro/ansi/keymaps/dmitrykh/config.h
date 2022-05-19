@@ -2,7 +2,7 @@
 #define CONFIG_USER_H
 
 // place overrides here
-#define LEADER_TIMEOUT 500
+#define LEADER_TIMEOUT 5000
 #define RGB_MATRIX_KEYPRESSES
 
 #ifdef RGB_MATRIX_ENABLE
